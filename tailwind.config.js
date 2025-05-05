@@ -9,8 +9,13 @@ module.exports = {
         extend: {
             colors: {
                 'white': '#FFF',
+                'blue': '#2523D5',
+                'pink': '#FA3C91'
+            },
+            fontFamily: {
+                sora: ['Sora', 'sans-serif'],
             },
         },
     },
     plugins: [],
-}
+};

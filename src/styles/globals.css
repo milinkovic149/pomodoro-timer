@@ -17,7 +17,7 @@ html {
 }
 
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Sora', sans-serif;
   color: #fff;
 }
 
@@ -64,4 +64,13 @@ input, textarea, select {
   padding: 0.5rem;
   border: 1px solid #ddd;
   border-radius: 4px;
+}
+
+/*Font*/
+@font-face {
+  font-family: 'Sora';
+  src: url('/src/assets/fonts/Sora-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
 }

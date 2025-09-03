@@ -2,6 +2,8 @@ import Image from "next/image";
 import Background from "@/assets/images/pomo-background.webp";
 import Header from "@/components/Header";
 import { Sora } from 'next/font/google'
+import Timer from "@/components/Timer";
+import Tasks from "@/components/Tasks";
 
 const sora = Sora({
     weight: '400',
@@ -20,6 +22,8 @@ export default function Home() {
             />
         </div>
         <Header/>
+        <Timer />
+        <Tasks />
     </main>
   );
 }

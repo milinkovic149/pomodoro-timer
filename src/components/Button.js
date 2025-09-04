@@ -5,7 +5,7 @@ const Button = ({ children, onClick, className, type = 'button' }) => {
         <button
             type={type}
             onClick={onClick}
-            className={`bg-gradient-to-r from-[#2523D5] to-[#FA3C91] font-sora px-[25px] py-[6px] rounded-[4px] text-white font-medium transition-all ${className || ''}`}
+            className={`bg-gradient-to-r from-[#2523D5] border border-white border-1 to-[#FA3C91] font-sora px-[25px] py-[6px] rounded-[4px] text-white font-medium transition-all ${className || ''}`}
         >
             {children}
         </button>

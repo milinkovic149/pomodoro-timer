@@ -211,34 +211,34 @@ const Timer = () => {
   }, []);
 
   return (
-    <div className="relative w-full flex items-start justify-center py-[40px]">
-      <div className="w-full max-w-[920px] px-4 flex flex-col items-center gap-[32px]">
+    <div className="relative w-full flex items-start justify-center py-[10px] sm:py-[40px]">
+      <div className="w-full max-w-[920px] px-[16px] flex flex-col items-center gap-[32px] sm:gap-[32px]">
         {/* Mode pills */}
-        <div className="mt-6 mb-8 flex items-center gap-[25px]">
+        <div className="mt-[16px] mb-[16px] flex flex-wrap justify-center gap-[12px] sm:gap-[25px]">
           {TIMER_MODES.map((m) => (
             <Button
               key={m.label}
               onClick={() => handleModeChange(m)}
-              className={m === mode ? 'underline underline-offset-[3px]' : ''}
+              className={m === mode ? 'underline underline-offset-[3px] text-sm sm:text-base' : 'text-sm sm:text-base'}
             >
               {m.label}
             </Button>
           ))}
         </div>
 
-        <div className="relative flex items-center justify-center w-full border-white border-opacity-20 bg-gradient-to-r from-[#2523D5] to-[#FA3C91] max-w-[470px] rounded-[15px] h-[184px]">
-          <div className="w-full flex items-center justify-center text-[120px] md:text-[96px] sm:text-[56px] leading-[1] font-sora font-bold text-white drop-shadow-lg">
+        <div className="relative flex items-center justify-center w-full border-white border-opacity-20 bg-gradient-to-r from-[#2523D5] to-[#FA3C91] rounded-[15px] p-[24px] sm:p-0 max-w-[470px]">
+          <div className="w-full flex items-center justify-center text-[72px] sm:text-[120px] md:text-[96px] leading-[1] font-sora font-bold text-white drop-shadow-lg">
             {/* Use fixed-width spans and tabular numbers so digits don't shift and colon stays centered */}
             <div className="inline-flex items-center justify-center select-none">
-              <span className="tabular-nums w-[2ch] text-right">{minutes}</span>
-              <span className="inline-block w-[0.5ch] text-center">:</span>
-              <span className="tabular-nums w-[2ch] text-left">{seconds}</span>
+              <span className="tabular-nums w-[2.5ch] text-right">{minutes}</span>
+              <span className="inline-block w-[0.6ch] text-center">:</span>
+              <span className="tabular-nums w-[2.5ch] text-left">{seconds}</span>
             </div>
           </div>
         </div>
 
         {/* Controls */}
-        <div className="mt-8 flex gap-[25px] items-center z-30">
+        <div className="mt-[24px] flex w-full gap-[16px] items-center z-30 justify-center sm:gap-[25px]">
           <Button
               onClick={() => {
                 if (isRunning) {
@@ -250,7 +250,7 @@ const Timer = () => {
                   saveTimerData({ modeIndex, secondsLeft: secondsLeft === 0 ? mode.minutes * 60 : secondsLeft, isRunning: true });
                 }
               }}
-              className={`rounded-full py-[12px] text-[20px]`}
+              className={`rounded-full py-[10px] px-[20px] text-[16px] sm:py-[12px] sm:px-[24px] sm:text-[20px]`}
           >
             {isRunning ? 'Pause' : 'Start'}
           </Button>
@@ -258,7 +258,7 @@ const Timer = () => {
           <Button
               onClick={handleSkip}
               disabled={secondsLeft === mode.minutes * 60}
-              className={`rounded-full py-[12px] text-[20px] ${
+              className={`rounded-full py-[10px] px-[24px] text-[16px] sm:py-[12px] sm:px-[24px] sm:text-[20px] ${
                 secondsLeft === mode.minutes * 60 ? 'opacity-60 cursor-not-allowed' : 'hover:bg-white/10'
               }`}
           >
@@ -267,7 +267,7 @@ const Timer = () => {
 
           <Button
               onClick={handleReset}
-              className={`rounded-full py-[12px] text-[20px]`}
+              className={`rounded-full py-[10px] px-[20px] text-[16px] sm:py-[12px] sm:px-[24px] sm:text-[20px]`}
           >
             Reset
           </Button>

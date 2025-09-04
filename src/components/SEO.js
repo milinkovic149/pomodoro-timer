@@ -2,15 +2,16 @@ import Head from 'next/head';
 
 // Reusable SEO component with sensible English defaults
 export default function SEO({
-  title = 'Pomodoro Timer — Focus & Productivity',
-  description = 'Boost focus and productivity with this lightweight Pomodoro timer. Track pomodoros, manage breaks, and stay on task.',
-  keywords = 'pomodoro, pomodoro timer, productivity, focus, time management, task timer, study timer',
-  url = 'https://yourdomain.com/',
-  image = 'https://yourdomain.com/pomo-background.webp',
+  title = 'Pomodoro Productivity — Focus with Pomodoro',
+  description = 'Boost your focus and productivity with Pomodoro Productivity — a sleek Pomodoro timer, task manager and progress tracker designed to keep you in flow.',
+  keywords = 'pomodoro, pomodoro timer, productivity, focus, task manager, time management, study timer',
+  url = 'https://www.pomodoro-productivity.com/',
+  image = 'https://www.pomodoro-productivity.com/og-image.png',
   type = 'website',
   locale = 'en_US',
-  author = 'Your Name or Company',
+  author = 'Pomodoro Productivity',
   canonical = undefined,
+  twitterHandle = '@pomodoro_prod',
 }) {
   const fullTitle = title;
   const canonicalUrl = canonical || url;
@@ -24,7 +25,8 @@ export default function SEO({
         "@id": canonicalUrl + "#website",
         "url": canonicalUrl,
         "name": fullTitle,
-        "description": description
+        "description": description,
+        "publisher": { "@type": "Organization", "name": author }
       },
       {
         "@type": "SoftwareApplication",
@@ -32,13 +34,10 @@ export default function SEO({
         "name": fullTitle,
         "url": canonicalUrl,
         "description": description,
-        "applicationCategory": "Education",
+        "applicationCategory": "ProductivityApplication",
         "operatingSystem": "Web",
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "USD"
-        }
+        "image": imageUrl,
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
       }
     ]
   };
@@ -66,6 +65,8 @@ export default function SEO({
 
       {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:site" content={twitterHandle} />
+      <meta name="twitter:creator" content={twitterHandle} />
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={imageUrl} />

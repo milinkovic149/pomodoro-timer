@@ -226,7 +226,7 @@ const Timer = () => {
           ))}
         </div>
 
-        <div className="relative flex items-center justify-center w-full border-white border-opacity-20 bg-gradient-to-r from-[#2523D5] to-[#FA3C91] rounded-[15px] p-[24px] sm:p-0 max-w-[470px]">
+        <div className="relative flex items-center justify-center w-full border-white border border-opacity-20 bg-gradient-to-r from-[#2523D5] to-[#FA3C91] rounded-[15px] p-[24px] sm:p-0 max-w-[470px]">
           <div className="w-full flex items-center justify-center text-[72px] sm:text-[120px] md:text-[96px] leading-[1] font-sora font-bold text-white drop-shadow-lg">
             {/* Use fixed-width spans and tabular numbers so digits don't shift and colon stays centered */}
             <div className="inline-flex items-center justify-center select-none">

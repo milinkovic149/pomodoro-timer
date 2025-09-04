@@ -288,185 +288,181 @@ const Tasks = () => {
   }, [tasks]);
 
   return (
-    <div className="relative w-full flex items-start justify-center py-[10px] sm:py-[40px]">
-      <div className="w-full max-w-[920px] px-[16px] flex flex-col items-center">
-        <div className="border border-1 w-full max-w-[470px] bg-gradient-to-r from-[#2523D5] to-[#FA3C91] rounded-[15px] p-[15px] pt-[10px]">
-          {/* Header */}
-          <div className="flex items-center justify-between w-full border-b border-white border-opacity-20 pb-[6px]">
-            <span>tasks: {totalTasks}</span>
-            <div className="flex items-center gap-[7px]">
-              <span>pomos: {completedPomos}/{totalEstPomos}</span>
-              <span>finish at: {finishAt}</span>
-            </div>
+      <div className="border border-1 max-w-[470px] mx-auto bg-gradient-to-r from-[#2523D5] to-[#FA3C91] rounded-[15px] p-[15px] pt-[10px]">
+        {/* Header */}
+        <div className="flex items-center justify-between w-full border-b border-white border-opacity-20 pb-[6px]">
+          <span>tasks: {totalTasks}</span>
+          <div className="flex items-center gap-[7px]">
+            <span>pomos: {completedPomos}/{totalEstPomos}</span>
+            <span>finish at: {finishAt}</span>
           </div>
+        </div>
 
-          {/* Add/Edit Task Form (now rendered above the list) */}
-          {showAddForm && (
-              <div className="flex items-end justify-center mt-[10px] mb-[10px]">
-                <div className="relative w-full border border-white border-opacity-20 rounded-[4px] py-[15px] px-[12px]">
-                  {/* Title Input */}
-                  <div className="flex justify-between mb-[8px]">
-                    <input
-                        type="text"
-                        value={title}
-                        onChange={(e) => {
-                          setTitle(e.target.value);
-                          if (e.target.value.trim()) {
-                            setError('');
-                          } else {
-                            setError('title is required field');
-                          }
-                        }}
-                        placeholder="Which task are you working on?"
-                        className="w-full border-none focus:outline-none p-[0]"
-                        autoFocus
+        {/* Add/Edit Task Form (now rendered above the list) */}
+        {showAddForm && (
+            <div className="flex items-end justify-center mt-[10px] mb-[10px]">
+              <div className="relative w-full border border-white border-opacity-20 rounded-[4px] py-[15px] px-[12px]">
+                {/* Title Input */}
+                <div className="flex justify-between mb-[8px]">
+                  <input
+                      type="text"
+                      value={title}
+                      onChange={(e) => {
+                        setTitle(e.target.value);
+                        if (e.target.value.trim()) {
+                          setError('');
+                        } else {
+                          setError('title is required field');
+                        }
+                      }}
+                      placeholder="Which task are you working on?"
+                      className="w-full border-none focus:outline-none p-[0]"
+                      autoFocus
+                  />
+                  <button
+                      onClick={handleCancelForm}
+                      className="flex items-center gap-2 text-white/70 hover:text-white transition-colors"
+                  >
+                    <CloseIcon />
+                  </button>
+                </div>
+
+                {/* Est Pomos */}
+                <div className="flex items-center mb-[8px]">
+                  <span className="text-[14px] text-white/80">Est pomos:</span>
+                  <div className="flex items-center gap-[5px]">
+                    <span className="text-[18px] font-medium min-w-[30px] text-center">{estPomos}</span>
+                    <button
+                        onClick={() => setEstPomos(Math.max(1, estPomos - 1))}
+                        className='bg-[white] rounded-[3px] flex justify-center items-center'
+                    >
+                      <ChevronDownIcon />
+                    </button>
+                    <button
+                        onClick={() => setEstPomos(estPomos + 1)}
+                        className='bg-[white] rounded-[3px] flex justify-center items-center'>
+                      <ChevronUpIcon />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Add Description Toggle */}
+                {!showDescription && (
+                    <button
+                        onClick={() => setShowDescription(true)}
+                        className="mb-[8px] text-[14px] underline underline-offset-[2px]"
+                    >
+                      + add description
+                    </button>
+                )}
+
+                {/* Description Input */}
+                {showDescription && (
+                  <div className="relative mb-[4px]">
+                    <textarea
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        placeholder="type your description here..."
+                        rows={4}
+                        className="bg-[black]/20 p-[8px] w-full bg-white/5 border-none rounded-[15px] focus:outline-none max-h-[100px] min-h-[32px] placeholder:text-[12px] text-[12px]"
                     />
                     <button
-                        onClick={handleCancelForm}
-                        className="flex items-center gap-2 text-white/70 hover:text-white transition-colors"
+                        onClick={() => setShowDescription(false)}
+                        className="absolute top-[3px] right-[10px] max-w-[15px]"
                     >
                       <CloseIcon />
                     </button>
                   </div>
+                )}
 
-                  {/* Est Pomos */}
-                  <div className="flex items-center mb-[8px]">
-                    <span className="text-[14px] text-white/80">Est pomos:</span>
-                    <div className="flex items-center gap-[5px]">
-                      <span className="text-[18px] font-medium min-w-[30px] text-center">{estPomos}</span>
+                <div className="flex items-center justify-between mb-6">
+                  <Button
+                      onClick={handleSaveTask}
+                      className="px-6 py-2 text-[14px] rounded-full !bg-gradient-to-l from-[#2523D5] to-[#FA3C91]"
+                  >
+                    Save
+                  </Button>
+                </div>
+
+                {error && (
+                    <p className="absolute top-[35px] text-[10px] text-red-500 text-[#FA3C91]">
+                      *{error}
+                    </p>
+                )}
+              </div>
+            </div>
+        )}
+
+        {/* Task List */}
+        <div className="flex flex-col gap-[8px] mt-[8px] mb-[8px]">
+          {tasks.map(task => (
+              <div
+                  key={task.id}
+                  onClick={() => handleSetActive(task.id)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSetActive(task.id); } }}
+                  className={`border rounded-[4px] px-[12px] py-[15px] cursor-pointer ${task.id === activeTaskId ? 'border-l-5 border-white border-opacity-80 bg-green-500/10' : ''} ${task.done ? 'border-white border-opacity-50' : 'border-white border-opacity-20'}`}
+              >
+                <div className="flex flex-col">
+                  <div className="flex items-center justify-between">
+                    <h3 className={`text-[16px] font-medium mb-1 ${task.done ? 'line-through opacity-60' : ''}`}>{task.title}</h3>
+                    <div className="flex items-center gap-[2px]">
+                      {/* Pomos counter */}
+                      <div className="flex items-center gap-2">
+                      <span className="text-[16px] font-medium min-w-[50px] text-center">
+                        {task.completedPomos}/{task.estPomos}
+                      </span>
+                      </div>
+
+                      {/* Edit button */}
                       <button
-                          onClick={() => setEstPomos(Math.max(1, estPomos - 1))}
-                          className='bg-[white] rounded-[3px] flex justify-center items-center'
+                          onClick={(e) => { e.stopPropagation(); handleEditTask(task); }}
+                          className="w-8 h-8 flex items-center justify-center text-white/70 hover:text-white transition-colors"
                       >
-                        <ChevronDownIcon />
+                        <EditIcon />
                       </button>
-                      <button
-                          onClick={() => setEstPomos(estPomos + 1)}
-                          className='bg-[white] rounded-[3px] flex justify-center items-center'>
-                        <ChevronUpIcon />
-                      </button>
-                    </div>
-                  </div>
 
-                  {/* Add Description Toggle */}
-                  {!showDescription && (
+                      {/* done toggle (checkbox) */}
                       <button
-                          onClick={() => setShowDescription(true)}
-                          className="mb-[8px] text-[14px] underline underline-offset-[2px]"
+                          onClick={(e) => { e.stopPropagation(); toggleDone(task.id); }}
+                          className="w-8 h-8 flex items-center justify-center text-white/70 hover:text-white transition-colors"
+                          aria-label={task.done ? 'mark not done' : 'mark done'}
                       >
-                        + add description
+                        <CheckIcon filled={Boolean(task.done)} />
                       </button>
-                  )}
 
-                  {/* Description Input */}
-                  {showDescription && (
-                    <div className="relative mb-[4px]">
-                      <textarea
-                          value={description}
-                          onChange={(e) => setDescription(e.target.value)}
-                          placeholder="type your description here..."
-                          rows={4}
-                          className="bg-[black]/20 p-[8px] w-full bg-white/5 border-none rounded-[15px] focus:outline-none max-h-[100px] min-h-[32px] placeholder:text-[12px] text-[12px]"
-                      />
+                      {/* Delete button */}
                       <button
-                          onClick={() => setShowDescription(false)}
-                          className="absolute top-[3px] right-[10px] max-w-[15px]"
+                          onClick={(e) => { e.stopPropagation(); handleDeleteTask(task.id); }}
+                          className="w-8 h-8 flex items-center justify-center text-white/70 hover:text-white transition-colors"
                       >
                         <CloseIcon />
                       </button>
                     </div>
-                  )}
-
-                  <div className="flex items-center justify-between mb-6">
-                    <Button
-                        onClick={handleSaveTask}
-                        className="px-6 py-2 text-[14px] rounded-full !bg-gradient-to-l from-[#2523D5] to-[#FA3C91]"
-                    >
-                      Save
-                    </Button>
                   </div>
-
-                  {error && (
-                      <p className="absolute top-[35px] text-[10px] text-red-500 text-[#FA3C91]">
-                        *{error}
+                  {task.description && (
+                      <p className={`text-[12px] mt-[8px] text-white/80 mb-2 whitespace-pre-wrap ${task.done ? 'line-through opacity-60' : ''}`}>
+                        {task.description}
                       </p>
                   )}
                 </div>
               </div>
-          )}
-
-          {/* Task List */}
-          <div className="flex flex-col gap-[8px] mt-[8px] mb-[8px]">
-            {tasks.map(task => (
-                <div
-                    key={task.id}
-                    onClick={() => handleSetActive(task.id)}
-                    role="button"
-                    tabIndex={0}
-                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSetActive(task.id); } }}
-                    className={`border rounded-[4px] px-[12px] py-[15px] cursor-pointer ${task.id === activeTaskId ? 'border-l-5 border-white border-opacity-80 bg-green-500/10' : ''} ${task.done ? 'border-white border-opacity-50' : 'border-white border-opacity-20'}`}
-                >
-                  <div className="flex flex-col">
-                    <div className="flex items-center justify-between">
-                      <h3 className={`text-[16px] font-medium mb-1 ${task.done ? 'line-through opacity-60' : ''}`}>{task.title}</h3>
-                      <div className="flex items-center gap-[2px]">
-                        {/* Pomos counter */}
-                        <div className="flex items-center gap-2">
-                        <span className="text-[16px] font-medium min-w-[50px] text-center">
-                          {task.completedPomos}/{task.estPomos}
-                        </span>
-                        </div>
-
-                        {/* Edit button */}
-                        <button
-                            onClick={(e) => { e.stopPropagation(); handleEditTask(task); }}
-                            className="w-8 h-8 flex items-center justify-center text-white/70 hover:text-white transition-colors"
-                        >
-                          <EditIcon />
-                        </button>
-
-                        {/* done toggle (checkbox) */}
-                        <button
-                            onClick={(e) => { e.stopPropagation(); toggleDone(task.id); }}
-                            className="w-8 h-8 flex items-center justify-center text-white/70 hover:text-white transition-colors"
-                            aria-label={task.done ? 'mark not done' : 'mark done'}
-                        >
-                          <CheckIcon filled={Boolean(task.done)} />
-                        </button>
-
-                        {/* Delete button */}
-                        <button
-                            onClick={(e) => { e.stopPropagation(); handleDeleteTask(task.id); }}
-                            className="w-8 h-8 flex items-center justify-center text-white/70 hover:text-white transition-colors"
-                        >
-                          <CloseIcon />
-                        </button>
-                      </div>
-                    </div>
-                    {task.description && (
-                        <p className={`text-[12px] mt-[8px] text-white/80 mb-2 whitespace-pre-wrap ${task.done ? 'line-through opacity-60' : ''}`}>
-                          {task.description}
-                        </p>
-                    )}
-                  </div>
-                </div>
-            ))}
-          </div>
-
-          {/* Add Task Button */}
-          {!showAddForm && (
-              <button
-                  onClick={handleAddTask}
-                  className="py-[15px] border border-dashed w-full rounded-[11px] bg-[black]/20"
-              >
-                add task +
-              </button>
-          )}
-
-          {/* Add/Edit form moved above the list (duplicate removed) */}
+          ))}
         </div>
+
+        {/* Add Task Button */}
+        {!showAddForm && (
+            <button
+                onClick={handleAddTask}
+                className="py-[15px] border border-dashed w-full rounded-[11px] bg-[black]/20"
+            >
+              add task +
+            </button>
+        )}
+
+        {/* Add/Edit form moved above the list (duplicate removed) */}
       </div>
-    </div>
   );
 };
 

@@ -1,6 +1,0 @@
-User-agent: *
-Allow: /
-Sitemap: https://www.pomodoro-productivity.com/sitemap.xml
-
-# Crawl-delay can be added if your server needs it
-# Crawl-delay: 10

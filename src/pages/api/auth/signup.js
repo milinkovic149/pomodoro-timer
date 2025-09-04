@@ -1,3 +1,5 @@
+import { auth, db, FieldValue } from '../../../lib/firebase';
+
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
         return res.status(405).json({ message: 'Method not allowed' });
@@ -15,34 +17,36 @@ export default async function handler(req, res) {
     }
 
     try {
-        // Here you would typically:
-        // 1. Check if user already exists
-        // 2. Hash the password
-        // 3. Save the user to database
-        // 4. Generate a JWT token or send verification email
+        // Proveri da li korisnik već postoji
+        const existingUser = await auth.getUserByEmail(email).catch(() => null);
+        if (existingUser) {
+            return res.status(409).json({ message: 'User already exists' });
+        }
 
-        // For now, this is a placeholder implementation
-        // Replace with your actual user registration logic
+        // Kreiraj korisnika u Firebase Auth
+        const userRecord = await auth.createUser({
+            email,
+            password,
+        });
 
-        // Example: Check if user exists
-        // const existingUser = await db.findUserByEmail(email);
-        // if (existingUser) {
-        //     return res.status(409).json({ message: 'User already exists' });
-        // }
+        // Opcionalno: Sačuvaj dodatne podatke u Firestore
+        await db.collection('users').doc(userRecord.uid).set({
+            email: userRecord.email,
+            createdAt: FieldValue.serverTimestamp(),
+        });
 
-        // const hashedPassword = bcrypt.hashSync(password, 10);
-        // const newUser = await db.createUser({ email, password: hashedPassword });
-
-        // const token = jwt.sign({ userId: newUser.id }, process.env.JWT_SECRET);
-
-        // Placeholder response
         res.status(201).json({
             message: 'User created successfully',
-            // token: token,
-            // user: { id: newUser.id, email: newUser.email }
+            user: {
+                id: userRecord.uid,
+                email: userRecord.email,
+            },
         });
     } catch (error) {
         console.error('Signup error:', error);
+        if (error.code === 'auth/email-already-exists') {
+            return res.status(409).json({ message: 'User already exists' });
+        }
         res.status(500).json({ message: 'Internal server error' });
     }
 }

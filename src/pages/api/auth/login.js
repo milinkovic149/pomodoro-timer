@@ -1,3 +1,5 @@
+import { auth, db } from '../../../lib/firebase';
+
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
         return res.status(405).json({ message: 'Method not allowed' });
@@ -11,27 +13,41 @@ export default async function handler(req, res) {
     }
 
     try {
-        // Here you would typically:
-        // 1. Validate the user credentials against your database
-        // 2. Generate a JWT token or session
-        // 3. Return the token/user data
+        // Koristi Firebase Auth REST API za login
+        const response = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.FIREBASE_API_KEY}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email,
+                password,
+                returnSecureToken: true,
+            }),
+        });
 
-        // For now, this is a placeholder implementation
-        // Replace with your actual authentication logic
+        const data = await response.json();
 
-        // Example: Check against a database
-        // const user = await db.findUserByEmail(email);
-        // if (!user || !bcrypt.compareSync(password, user.password)) {
-        //     return res.status(401).json({ message: 'Invalid credentials' });
-        // }
+        if (!response.ok) {
+            if (data.error.message === 'EMAIL_NOT_FOUND' || data.error.message === 'INVALID_PASSWORD') {
+                return res.status(401).json({ message: 'Invalid credentials' });
+            }
+            throw new Error(data.error.message);
+        }
 
-        // const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET);
+        // Opcionalno: Dobavi dodatne podatke iz Firestore
+        const userDoc = await db.collection('users').doc(data.localId).get();
+        const userData = userDoc.exists ? userDoc.data() : {};
 
-        // Placeholder response
         res.status(200).json({
             message: 'Login successful',
-            // token: token,
-            // user: { id: user.id, email: user.email }
+            token: data.idToken,
+            refreshToken: data.refreshToken,
+            user: {
+                id: data.localId,
+                email: data.email,
+                ...userData,
+            },
         });
     } catch (error) {
         console.error('Login error:', error);

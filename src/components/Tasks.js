@@ -1,5 +1,6 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import Button from './Button';
+import { useUser } from '../contexts/UserContext';
 
 // SVG Icons
 const EditIcon = () => (
@@ -36,7 +37,8 @@ const ChevronDownIcon = () => (
 );
 
 const Tasks = () => {
-  const [tasks, setTasks] = useState([]);
+  const { tasksData, saveTasksData, activeTaskId, setActiveTaskId } = useUser();
+  const [tasks, setTasks] = useState(tasksData);
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
   
@@ -46,6 +48,10 @@ const Tasks = () => {
   const [description, setDescription] = useState('');
   const [showDescription, setShowDescription] = useState(false);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    setTasks(tasksData);
+  }, [tasksData]);
 
   // Calculate totals
   const totalTasks = tasks.length;
@@ -108,13 +114,14 @@ const Tasks = () => {
     }
     setError('');
 
+    let newTasks;
     if (editingTask) {
       // Edit existing task
-      setTasks(prev => prev.map(task => 
+      newTasks = tasks.map(task => 
         task.id === editingTask.id 
           ? { ...task, title: title.trim(), estPomos, description }
           : task
-      ));
+      );
     } else {
       // Add new task
       const newTask = {
@@ -124,9 +131,11 @@ const Tasks = () => {
         completedPomos: 0,
         description
       };
-      setTasks(prev => [...prev, newTask]);
+      newTasks = [...tasks, newTask];
     }
 
+    setTasks(newTasks);
+    saveTasksData(newTasks);
     handleCancelForm();
   };
 
@@ -140,23 +149,33 @@ const Tasks = () => {
   };
 
   const handleDeleteTask = (taskId) => {
-    setTasks(prev => prev.filter(task => task.id !== taskId));
+    const newTasks = tasks.filter(task => task.id !== taskId);
+    setTasks(newTasks);
+    saveTasksData(newTasks);
   };
 
   const incrementPomos = (taskId) => {
-    setTasks(prev => prev.map(task => 
+    const newTasks = tasks.map(task => 
       task.id === taskId 
         ? { ...task, completedPomos: Math.min(task.completedPomos + 1, task.estPomos) }
         : task
-    ));
+    );
+    setTasks(newTasks);
+    saveTasksData(newTasks);
   };
 
   const decrementPomos = (taskId) => {
-    setTasks(prev => prev.map(task => 
+    const newTasks = tasks.map(task => 
       task.id === taskId 
         ? { ...task, completedPomos: Math.max(task.completedPomos - 1, 0) }
         : task
-    ));
+    );
+    setTasks(newTasks);
+    saveTasksData(newTasks);
+  };
+
+  const handleSetActive = (taskId) => {
+    setActiveTaskId(taskId);
   };
 
   return (
@@ -175,7 +194,7 @@ const Tasks = () => {
           {tasks.map(task => (
               <div
                   key={task.id}
-                  className="border border-white/20 rounded-[4px] px-[12px] py-[15px]"
+                  className={`border border-white/20 rounded-[4px] px-[12px] py-[15px] ${task.id === activeTaskId ? 'bg-green-500/20' : ''}`}
               >
                 <div className="flex flex-col">
                   <div className="flex items-center justify-between">
@@ -202,6 +221,14 @@ const Tasks = () => {
                           className="w-8 h-8 flex items-center justify-center text-white/70 hover:text-white transition-colors"
                       >
                         <CloseIcon />
+                      </button>
+
+                      {/* Set Active button */}
+                      <button
+                          onClick={() => handleSetActive(task.id)}
+                          className="w-8 h-8 flex items-center justify-center text-white/70 hover:text-white transition-colors"
+                      >
+                        {task.id === activeTaskId ? 'Active' : 'Set Active'}
                       </button>
                     </div>
                   </div>

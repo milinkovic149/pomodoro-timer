@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import Button from './Button';
 
-const LoginModal = ({ isOpen, onClose }) => {
+const LoginModal = ({ isOpen, onClose, onLogin }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [success, setSuccess] = useState(false);
     const [error, setError] = useState('');
 
     const handleSubmit = async (e) => {
@@ -17,15 +18,12 @@ const LoginModal = ({ isOpen, onClose }) => {
         setError('');
 
         // Custom email validation
-        const emailRegex = /^([^@\s]+)@((?:[^@\s]+\.)+[^@\s]+)$/;
-
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
             setEmailError('Please enter a valid email address');
             setLoading(false);
             return;
         }
-
-        console.log('Submitting login form with:', { email, password });
 
         try {
             const response = await fetch('/api/auth/login', {
@@ -36,15 +34,12 @@ const LoginModal = ({ isOpen, onClose }) => {
                 body: JSON.stringify({ email, password }),
             });
 
-            console.log('Response status:', response.status);
             const data = await response.json();
-            console.log('Response data:', data);
 
             if (response.ok) {
-                // Handle successful login (e.g., store token, redirect)
-                console.log('Login successful:', data);
-                alert('Login successful!');
-                onClose();
+                onLogin(data.user);
+                setSuccess(true);
+                // onClose(); // Remove this to keep modal open
             } else {
                 setError(data.message || 'Login failed');
             }
@@ -58,14 +53,25 @@ const LoginModal = ({ isOpen, onClose }) => {
 
     if (!isOpen) return null;
 
+    if (success) {
+        return (
+            <div className="fixed w-full h-full inset-0 bg-[black]/50 top-[0] flex items-center justify-center z-50" onClick={onClose}>
+                <div className="bg-[black] rounded-lg px-[40px] py-[20px] rounded-[20px] text-center" onClick={(e) => e.stopPropagation()}>
+                    <h2 className="text-[20px] mb-[20px]">🎉 Login successful! 🎉</h2>
+                    <Button onClick={onClose}>Close</Button>
+                </div>
+            </div>
+        );
+    }
+
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
-                <h2 className="text-2xl font-bold mb-4 text-center">Login</h2>
+        <div className="fixed w-full h-full inset-0 bg-[black]/50 top-[0] flex items-center justify-center z-50" onClick={onClose}>
+            <div className="relative bg-[black] rounded-lg px-[40px] py-[20px] rounded-[20px]" onClick={(e) => e.stopPropagation()}>
+                <button onClick={onClose} className="absolute top-[12px] right-[15px] text-white text-[24px]">&times;</button>
+                <h2 className="text-center text-[20px]">Login</h2>
                 <form onSubmit={handleSubmit} noValidate>
-                    {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-                    <div className="mb-4">
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                    <div className="mb-[10px] relative">
+                        <label htmlFor="email" className="text-[10px]">
                             Email
                         </label>
                         <input
@@ -73,12 +79,12 @@ const LoginModal = ({ isOpen, onClose }) => {
                             id="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full border focus:outline-none"
                         />
-                        {emailError && <p className="text-red-500 text-sm mt-1">{emailError}</p>}
+                        {emailError && <p className="absolute text-[#F44336] text-[10px]">*{emailError}</p>}
                     </div>
-                    <div className="mb-4">
-                        <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                    <div className="mb-[20px] relative">
+                        <label htmlFor="password" className="text-[10px]">
                             Password
                         </label>
                         <input
@@ -86,16 +92,22 @@ const LoginModal = ({ isOpen, onClose }) => {
                             id="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full border focus:outline-none"
                         />
-                        {passwordError && <p className="text-red-500 text-sm mt-1">{passwordError}</p>}
+                        {passwordError && <p className="absolute text-[#F44336] text-[10px]">{passwordError}</p>}
                     </div>
-                    <div className="flex justify-end gap-4">
+                    <div className="flex justify-around">
                         <Button onClick={onClose} className="bg-gray-500 hover:bg-gray-600">
                             Cancel
                         </Button>
                         <Button type="submit" disabled={loading}>
-                            {loading ? 'Logging in...' : 'Login'}
+                            {loading ? (
+                                <div className="flex items-center justify-center">
+                                    <div className="w-[20px] h-[20px] border-[2px] border-white border-t-transparent rounded-full loader"></div>
+                                </div>
+                            ) : (
+                                'Login'
+                            )}
                         </Button>
                     </div>
                 </form>

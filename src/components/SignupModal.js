@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Button from './Button';
 
-const SignupModal = ({ isOpen, onClose }) => {
+const SignupModal = ({ isOpen, onClose, onSignup }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -9,10 +9,10 @@ const SignupModal = ({ isOpen, onClose }) => {
     const [passwordError, setPasswordError] = useState('');
     const [confirmPasswordError, setConfirmPasswordError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [success, setSuccess] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Signup form submitted');
         setLoading(true);
         setEmailError('');
         setPasswordError('');
@@ -54,8 +54,6 @@ const SignupModal = ({ isOpen, onClose }) => {
             return;
         }
 
-        console.log('Submitting signup form with:', { email, password });
-
         try {
             const response = await fetch('/api/auth/signup', {
                 method: 'POST',
@@ -65,15 +63,11 @@ const SignupModal = ({ isOpen, onClose }) => {
                 body: JSON.stringify({ email, password }),
             });
 
-            console.log('Response status:', response.status);
             const data = await response.json();
-            console.log('Response data:', data);
 
             if (response.ok) {
-                // Handle successful signup (e.g., show success message, redirect to login)
-                console.log('Signup successful:', data);
-                alert('Account created successfully!');
-                onClose();
+                onSignup(data.user);
+                setSuccess(true);
             } else {
                 setEmailError(data.message || 'Signup failed');
             }
@@ -87,12 +81,24 @@ const SignupModal = ({ isOpen, onClose }) => {
 
     if (!isOpen) return null;
 
+    if (success) {
+        return (
+            <div className="fixed w-full h-full inset-0 bg-[black]/50 top-[0] flex items-center justify-center z-50" onClick={onClose}>
+                <div className="bg-[black] rounded-lg px-[40px] py-[20px] rounded-[20px] text-center" onClick={(e) => e.stopPropagation()}>
+                    <h2 className="text-[20px] mb-[20px]">🎉 Your account has been successfully created! 🎉</h2>
+                    <Button onClick={onClose}>Close</Button>
+                </div>
+            </div>
+        );
+    }
+
     return (
-        <div className="fixed w-full h-full inset-0 bg-[black]/50 top-[0] flex items-center justify-center z-50">
-            <div className="bg-[black] rounded-lg px-[40px] py-[20px] rounded-[20px]">
+        <div className="fixed w-full h-full inset-0 bg-[black]/50 top-[0] flex items-center justify-center z-50" onClick={onClose}>
+            <div className="relative bg-[black] rounded-lg px-[40px] py-[20px] rounded-[20px]" onClick={(e) => e.stopPropagation()}>
+                <button onClick={onClose} className="absolute top-[12px] right-[15px] text-white text-[24px]">&times;</button>
                 <h2 className="text-center text-[20px]">Create Account</h2>
                 <form onSubmit={handleSubmit} noValidate>
-                    <div className="mb-[6px]">
+                    <div className="mb-[10px] relative">
                         <label htmlFor="signup-email" className="text-[10px]">
                             Email
                         </label>
@@ -103,9 +109,9 @@ const SignupModal = ({ isOpen, onClose }) => {
                             onChange={(e) => setEmail(e.target.value)}
                             className="w-full border focus:outline-none"
                         />
-                        {emailError && <p className="text-red-500 text-[10px] mt-1">{emailError}</p>}
+                        {emailError && <p className="absolute text-[#F44336] text-[10px]">*{emailError}</p>}
                     </div>
-                    <div className="mb-[6px]">
+                    <div className="mb-[10px] relative">
                         <label htmlFor="signup-password" className="text-[10px]">
                             Password
                         </label>
@@ -116,9 +122,9 @@ const SignupModal = ({ isOpen, onClose }) => {
                             onChange={(e) => setPassword(e.target.value)}
                             className="w-full border focus:outline-none"
                         />
-                        {passwordError && <p className="text-red-500 text-[10px] mt-1">{passwordError}</p>}
+                        {passwordError && <p className="absolute text-[#F44336] text-[10px]">{passwordError}</p>}
                     </div>
-                    <div className="mb-[20px]">
+                    <div className="mb-[20px] relative">
                         <label htmlFor="confirm-password" className="text-[10px]">
                             Confirm Password
                         </label>
@@ -129,14 +135,20 @@ const SignupModal = ({ isOpen, onClose }) => {
                             onChange={(e) => setConfirmPassword(e.target.value)}
                             className="w-full border focus:outline-none"
                         />
-                        {confirmPasswordError && <p className="text-red-500 text-[10px] mt-1">{confirmPasswordError}</p>}
+                        {confirmPasswordError && <p className="absolute text-[#F44336] text-[10px]">{confirmPasswordError}</p>}
                     </div>
                     <div className="flex justify-around">
                         <Button onClick={onClose} className="bg-gray-500 hover:bg-gray-600">
                             Cancel
                         </Button>
                         <Button type="submit" disabled={loading}>
-                            {loading ? 'Signing up...' : 'Sign Up'}
+                            {loading ? (
+                                <div className="flex items-center justify-center">
+                                    <div className="w-[20px] h-[20px] border-[2px] border-white border-t-transparent rounded-full loader"></div>
+                                </div>
+                            ) : (
+                                'Sign Up'
+                            )}
                         </Button>
                     </div>
                 </form>

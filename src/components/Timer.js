@@ -70,7 +70,6 @@ const Timer = () => {
   const [isRunning, setIsRunning] = useState(Boolean(timerData?.isRunning));
   const [autoStartNext, setAutoStartNext] = useState(false);
   const intervalRef = useRef(null);
-  // ensure pomodoro counter is always numeric
   const pomodoroCountRef = useRef(Number(timerData?.pomodoroCount) || 0);
 
   useEffect(() => {

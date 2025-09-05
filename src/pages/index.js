@@ -16,8 +16,8 @@ export default function Home() {
   return (
     <main>
       <SEO
-        title="Pomodoro Productivity — Pomodoro tajmer za veću produktivnost"
-        description="Jednostavan i lagan Pomodoro tajmer koji povećava fokus i produktivnost. Podesite intervale rada i odmora i pratite napredak."
+        title="Pomodoro Productivity — Pomodoro timer for increased productivity"
+        description="A simple, lightweight Pomodoro timer to boost focus and productivity. Configure work and break intervals and track your progress."
         canonical="https://www.pomodoro-productivity.com/"
         image="https://www.pomodoro-productivity.com/next.svg"
       />

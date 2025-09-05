@@ -2,7 +2,7 @@ import Head from "next/head";
 
 export default function SEO({
   title = "Pomodoro Productivity",
-  description = "Jednostavan Pomodoro tajmer za fokus i veću produktivnost.",
+  description = "Simple Pomodoro timer for focus and increased productivity.",
   image,
   canonical,
   noindex = false,

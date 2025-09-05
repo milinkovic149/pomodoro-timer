@@ -82,7 +82,9 @@ const Timer = () => {
     const safeTotalPomodoroCount = Number(timerData?.totalPomodoroCount);
 
     setModeIndex(Number.isFinite(safeModeIndex) ? safeModeIndex : 0);
-    setSecondsLeft(Number.isFinite(safeSeconds) ? safeSeconds : (TIMER_MODES[modeIndex]?.minutes || TIMER_MODES[0].minutes) * 60);
+    const fallbackModeIndex = Number.isFinite(safeModeIndex) ? safeModeIndex : 0;
+    const fallbackMinutes = (TIMER_MODES[fallbackModeIndex]?.minutes || TIMER_MODES[0].minutes);
+    setSecondsLeft(Number.isFinite(safeSeconds) ? safeSeconds : fallbackMinutes * 60);
     setIsRunning(safeIsRunning);
     pomodoroCountRef.current = Number.isFinite(safePomodoroCount) ? safePomodoroCount : 0;
   }, [timerData]);
@@ -94,7 +96,8 @@ const Timer = () => {
         if (prev <= 1) {
           // play sound and show notification when a timer naturally expires
           playSound();
-          showNotification(mode.label);
+          // use modeIndex and TIMER_MODES to avoid referencing `mode` in deps
+          showNotification(TIMER_MODES[modeIndex]?.label || TIMER_MODES[0].label);
           clearInterval(intervalRef.current);
           setIsRunning(false);
 
@@ -140,7 +143,7 @@ const Timer = () => {
       });
     }, 1000);
     return () => clearInterval(intervalRef.current);
-  }, [isRunning, modeIndex, activeTaskId, addPomo, saveTimerData, timerData]);
+  }, [isRunning, modeIndex, activeTaskId, addPomo, saveTimerData, timerData, setTimerData]);
 
   const handleReset = () => {
     setSecondsLeft(mode.minutes * 60);

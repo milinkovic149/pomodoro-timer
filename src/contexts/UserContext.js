@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { initializeApp, getApps } from 'firebase/app';
 import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
 
@@ -36,16 +36,38 @@ export const UserProvider = ({ children }) => {
   const [tasksData, setTasksData] = useState([]);
   const [activeTaskId, setActiveTaskId] = useState(null);
 
-  useEffect(() => {
-    const savedUser = localStorage.getItem('user');
-    if (savedUser) {
-      const parsedUser = JSON.parse(savedUser);
-      setUser(parsedUser);
-      loadUserData(parsedUser.id);
+  // stable save functions to avoid changing dependencies in callbacks
+  const saveTimerData = useCallback(async (data) => {
+    if (!user) return;
+    try {
+      const docRef = doc(db, 'users', user.id);
+      await updateDoc(docRef, { timer: data });
+    } catch (error) {
+      console.error('Error saving timer data:', error);
     }
-  }, []);
+  }, [user]);
 
-  const loadUserData = async (userId) => {
+  const saveTasksData = useCallback(async (data) => {
+    if (!user) return;
+    try {
+      const docRef = doc(db, 'users', user.id);
+      await updateDoc(docRef, { tasks: data, activeTaskId });
+      setTasksData(data);
+    } catch (error) {
+      console.error('Error saving tasks data:', error);
+    }
+  }, [user, activeTaskId]);
+
+  const addPomo = useCallback(async (taskId) => {
+    if (!taskId) return;
+    const updatedTasks = tasksData.map(task => 
+      task.id === taskId ? { ...task, completedPomos: task.completedPomos + 1 } : task
+    );
+    setTasksData(updatedTasks);
+    await saveTasksData(updatedTasks);
+  }, [tasksData, saveTasksData]);
+
+  const loadUserData = useCallback(async (userId) => {
     try {
       const docRef = doc(db, 'users', userId);
       const docSnap = await getDoc(docRef);
@@ -71,37 +93,16 @@ export const UserProvider = ({ children }) => {
     } catch (error) {
       console.error('Error loading user data:', error);
     }
-  };
+  }, [saveTimerData]);
 
-  const saveTimerData = async (data) => {
-    if (!user) return;
-    try {
-      const docRef = doc(db, 'users', user.id);
-      await updateDoc(docRef, { timer: data });
-    } catch (error) {
-      console.error('Error saving timer data:', error);
+  useEffect(() => {
+    const savedUser = localStorage.getItem('user');
+    if (savedUser) {
+      const parsedUser = JSON.parse(savedUser);
+      setUser(parsedUser);
+      loadUserData(parsedUser.id);
     }
-  };
-
-  const saveTasksData = async (data) => {
-    if (!user) return;
-    try {
-      const docRef = doc(db, 'users', user.id);
-      await updateDoc(docRef, { tasks: data, activeTaskId });
-      setTasksData(data);
-    } catch (error) {
-      console.error('Error saving tasks data:', error);
-    }
-  };
-
-  const addPomo = async (taskId) => {
-    if (!taskId) return;
-    const updatedTasks = tasksData.map(task => 
-      task.id === taskId ? { ...task, completedPomos: task.completedPomos + 1 } : task
-    );
-    setTasksData(updatedTasks);
-    await saveTasksData(updatedTasks);
-  };
+  }, [loadUserData]);
 
   const handleLogin = (userData) => {
     setUser(userData);

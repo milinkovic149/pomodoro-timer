@@ -104,7 +104,7 @@ const Tasks = () => {
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [showAddForm, showDescription, title, estPomos, description, editingTask]);
+  }, [showAddForm, showDescription, handleSaveTask]);
 
   const resetForm = () => {
     setTitle('');
@@ -124,7 +124,7 @@ const Tasks = () => {
     resetForm();
   };
 
-  const handleSaveTask = () => {
+  const handleSaveTask = React.useCallback(() => {
     if (!title.trim()) {
       setError('title is required field');
       return;
@@ -155,8 +155,14 @@ const Tasks = () => {
 
     setTasks(newTasks);
     saveTasksData(newTasks);
-    handleCancelForm();
-  };
+    // close & reset form inline to avoid depending on resetForm
+    setShowAddForm(false);
+    setTitle('');
+    setEstPomos(1);
+    setDescription('');
+    setShowDescription(false);
+    setEditingTask(null);
+  }, [title, estPomos, description, editingTask, tasks, saveTasksData]);
 
   const handleEditTask = (task) => {
     setEditingTask(task);
@@ -285,7 +291,7 @@ const Tasks = () => {
       }
       setActiveTaskId(next ? next.id : null);
     }
-  }, [tasks]);
+  }, [tasks, activeTaskId, saveTasksData, setActiveTaskId]);
 
   return (
       <div className="border border-1 max-w-[470px] mx-auto bg-gradient-to-r from-[#2523D5] to-[#FA3C91] rounded-[15px] p-[15px] pt-[10px]">

@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   siteUrl: 'https://www.pomodoro-productivity.com',
   generateRobotsTxt: false, // robots.txt already present in public/
   changefreq: 'daily',

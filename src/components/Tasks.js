@@ -91,21 +91,6 @@ const Tasks = () => {
     });
   }, [totalEstPomos, completedPomos]);
 
-  // Keyboard shortcut for saving when description is open
-  React.useEffect(() => {
-    if (!showAddForm || !showDescription) return;
-
-    const handleKeyDown = (e) => {
-      if (e.ctrlKey && e.key === 's') {
-        e.preventDefault();
-        handleSaveTask();
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [showAddForm, showDescription, handleSaveTask]);
-
   const resetForm = () => {
     setTitle('');
     setEstPomos(1);
@@ -163,6 +148,21 @@ const Tasks = () => {
     setShowDescription(false);
     setEditingTask(null);
   }, [title, estPomos, description, editingTask, tasks, saveTasksData]);
+
+  // Keyboard shortcut for saving when description is open
+  React.useEffect(() => {
+    if (!showAddForm || !showDescription) return;
+
+    const handleKeyDown = (e) => {
+      if (e.ctrlKey && e.key === 's') {
+        e.preventDefault();
+        handleSaveTask();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [showAddForm, showDescription, handleSaveTask]);
 
   const handleEditTask = (task) => {
     setEditingTask(task);

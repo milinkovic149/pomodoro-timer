@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://www.pomodoro-productivity.com/sitemap.xml
+
+# Disallow internal or sensitive paths
+Disallow: /api/
+Disallow: /_next/
+Disallow: /secret

@@ -1,0 +1,15 @@
+{
+  "name": "Pomodoro Productivity",
+  "short_name": "Pomodoro",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#100B16",
+  "theme_color": "#100B16",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    }
+  ]
+}

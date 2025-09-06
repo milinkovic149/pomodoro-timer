@@ -5,6 +5,7 @@ import { Sora } from 'next/font/google'
 import Timer from "@/components/Timer";
 import Tasks from "@/components/Tasks";
 import SEO from "@/components/SEO";
+import Footer from '@/components/Footer';
 
 const sora = Sora({
     weight: '400',
@@ -14,7 +15,7 @@ const sora = Sora({
 export default function Home() {
 
   return (
-    <main>
+    <main className="min-h-screen flex flex-col">
       <SEO
         title="Pomodoro Productivity — Pomodoro timer for increased productivity"
         description="A simple, lightweight Pomodoro timer to boost focus and productivity. Configure work and break intervals and track your progress."
@@ -28,9 +29,12 @@ export default function Home() {
                 className="block w-full h-full object-cover object-center"
             />
         </div>
-        <Header/>
-        <Timer />
-        <Tasks />
+        <div className="flex-1">
+          <Header/>
+          <Timer />
+          <Tasks />
+        </div>
+        <Footer />
     </main>
   );
 }

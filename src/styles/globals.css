@@ -89,5 +89,3 @@ input, textarea, select {
 .loader {
   animation: spin 1s linear infinite;
 }
-
-@tailwind utilities;

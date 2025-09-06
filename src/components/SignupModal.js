@@ -94,7 +94,7 @@ const SignupModal = ({ isOpen, onClose, onSignup }) => {
 
     return (
         <div className="fixed w-full h-full inset-0 bg-[black]/50 top-[0] flex items-center justify-center z-50" onClick={onClose}>
-            <div className="relative bg-[black] rounded-lg px-[40px] py-[20px] rounded-[20px]" onClick={(e) => e.stopPropagation()}>
+            <div className="mx-[16px] relative bg-[black] rounded-lg px-[40px] py-[20px] rounded-[20px]" onClick={(e) => e.stopPropagation()}>
                 <button onClick={onClose} className="absolute top-[12px] right-[15px] text-white text-[24px]">&times;</button>
                 <h2 className="text-center text-[20px]">Create Account</h2>
                 <form onSubmit={handleSubmit} noValidate>

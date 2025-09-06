@@ -1,5 +1,6 @@
 @import "tailwindcss/preflight";
 @tailwind utilities;
+@import "tailwindcss";
 
 
 /* Reset margins and padding */
@@ -88,3 +89,5 @@ input, textarea, select {
 .loader {
   animation: spin 1s linear infinite;
 }
+
+@tailwind utilities;

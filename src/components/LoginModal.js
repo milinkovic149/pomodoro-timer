@@ -56,7 +56,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
     if (success) {
         return (
             <div className="fixed w-full h-full inset-0 bg-[black]/50 top-[0] flex items-center justify-center z-50" onClick={onClose}>
-                <div className="bg-[black] rounded-lg px-[40px] py-[20px] rounded-[20px] text-center" onClick={(e) => e.stopPropagation()}>
+                <div className="mx-[16px] bg-[black] rounded-lg px-[40px] py-[20px] rounded-[20px] text-center" onClick={(e) => e.stopPropagation()}>
                     <h2 className="text-[20px] mb-[20px]">🎉 Login successful! 🎉</h2>
                     <Button onClick={onClose}>Close</Button>
                 </div>

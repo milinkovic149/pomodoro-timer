@@ -91,6 +91,21 @@ const Tasks = () => {
     });
   }, [totalEstPomos, completedPomos]);
 
+  // Keyboard shortcut for saving when description is open
+  React.useEffect(() => {
+    if (!showAddForm || !showDescription) return;
+
+    const handleKeyDown = (e) => {
+      if (e.ctrlKey && e.key === 's') {
+        e.preventDefault();
+        handleSaveTask();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [showAddForm, showDescription, title, estPomos, description, editingTask]);
+
   const resetForm = () => {
     setTitle('');
     setEstPomos(1);
@@ -109,7 +124,7 @@ const Tasks = () => {
     resetForm();
   };
 
-  const handleSaveTask = React.useCallback(() => {
+  const handleSaveTask = () => {
     if (!title.trim()) {
       setError('title is required field');
       return;
@@ -140,29 +155,8 @@ const Tasks = () => {
 
     setTasks(newTasks);
     saveTasksData(newTasks);
-    // close & reset form inline to avoid depending on resetForm
-    setShowAddForm(false);
-    setTitle('');
-    setEstPomos(1);
-    setDescription('');
-    setShowDescription(false);
-    setEditingTask(null);
-  }, [title, estPomos, description, editingTask, tasks, saveTasksData]);
-
-  // Keyboard shortcut for saving when description is open
-  React.useEffect(() => {
-    if (!showAddForm || !showDescription) return;
-
-    const handleKeyDown = (e) => {
-      if (e.ctrlKey && e.key === 's') {
-        e.preventDefault();
-        handleSaveTask();
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [showAddForm, showDescription, handleSaveTask]);
+    handleCancelForm();
+  };
 
   const handleEditTask = (task) => {
     setEditingTask(task);
@@ -291,10 +285,10 @@ const Tasks = () => {
       }
       setActiveTaskId(next ? next.id : null);
     }
-  }, [tasks, activeTaskId, saveTasksData, setActiveTaskId]);
+  }, [tasks]);
 
   return (
-      <div className="border border-1 max-w-[470px] mx-auto bg-gradient-to-r from-[#2523D5] to-[#FA3C91] rounded-[15px] p-[15px] pt-[10px]">
+      <div className="border border-1 max-w-[470px] mx-[24px] min-[500px]:mx-auto bg-gradient-to-r from-[#2523D5] to-[#FA3C91] rounded-[15px] p-[15px] pt-[10px]">
         {/* Header */}
         <div className="flex items-center justify-between w-full border-b border-white border-opacity-20 pb-[6px]">
           <span>tasks: {totalTasks}</span>
@@ -322,12 +316,12 @@ const Tasks = () => {
                         }
                       }}
                       placeholder="Which task are you working on?"
-                      className="w-full border-none focus:outline-none p-[0]"
+                      className="w-full border-none focus:outline-none p-[0] md:text-size:[16px] text-[14px]"
                       autoFocus
                   />
                   <button
                       onClick={handleCancelForm}
-                      className="flex items-center gap-2 text-white/70 hover:text-white transition-colors"
+                      className="flex items-center gap-2 transition-colors text-white/70 hover:text-white"
                   >
                     <CloseIcon />
                   </button>
@@ -381,7 +375,7 @@ const Tasks = () => {
                   </div>
                 )}
 
-                <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center justify-between">
                   <Button
                       onClick={handleSaveTask}
                       className="px-6 py-2 text-[14px] rounded-full !bg-gradient-to-l from-[#2523D5] to-[#FA3C91]"
@@ -424,7 +418,7 @@ const Tasks = () => {
                       {/* Edit button */}
                       <button
                           onClick={(e) => { e.stopPropagation(); handleEditTask(task); }}
-                          className="w-8 h-8 flex items-center justify-center text-white/70 hover:text-white transition-colors"
+                          className="flex items-center justify-center w-8 h-8 transition-colors text-white/70 hover:text-white"
                       >
                         <EditIcon />
                       </button>
@@ -432,7 +426,7 @@ const Tasks = () => {
                       {/* done toggle (checkbox) */}
                       <button
                           onClick={(e) => { e.stopPropagation(); toggleDone(task.id); }}
-                          className="w-8 h-8 flex items-center justify-center text-white/70 hover:text-white transition-colors"
+                          className="flex items-center justify-center w-8 h-8 transition-colors text-white/70 hover:text-white"
                           aria-label={task.done ? 'mark not done' : 'mark done'}
                       >
                         <CheckIcon filled={Boolean(task.done)} />
@@ -441,7 +435,7 @@ const Tasks = () => {
                       {/* Delete button */}
                       <button
                           onClick={(e) => { e.stopPropagation(); handleDeleteTask(task.id); }}
-                          className="w-8 h-8 flex items-center justify-center text-white/70 hover:text-white transition-colors"
+                          className="flex items-center justify-center w-8 h-8 transition-colors text-white/70 hover:text-white"
                       >
                         <CloseIcon />
                       </button>

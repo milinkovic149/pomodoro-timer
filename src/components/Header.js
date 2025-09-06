@@ -32,7 +32,7 @@ const Header = () => {
 
     return (
         <>
-            <div className='flex justify-between items-center border-b border-white/75 mx-[75px] py-[18px]'>
+            <div className='flex justify-between items-center border-b border-white/75 mx-[16px] md:mx-[75px] py-[18px] md:flex-row flex-col gap-[10px] md:gap-0'>
                 {user ? (
                     <div className='text-white'>
                         Hi {user.email}{isReturning ? ' welcome back!' : '!'}

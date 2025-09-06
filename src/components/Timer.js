@@ -203,10 +203,10 @@ const Timer = () => {
   const seconds = (secondsLeft % 60).toString().padStart(2, '0');
 
   return (
-    <div className="relative w-full flex items-start justify-center py-[40px]">
-      <div className="w-full max-w-[920px] px-4 flex flex-col items-center gap-[32px]">
+    <div className="relative w-full flex items-start justify-center py-[30px] md:py-[40px]">
+      <div className="w-full max-w-[920px] px-4 flex flex-col items-center gap-[20px] md:gap-[32px]">
         {/* Mode pills */}
-        <div className="mt-6 mb-8 flex items-center gap-[25px]">
+        <div className="flex items-center gap-[15px] flex-col md:flex-row md:gap-[25px]">
           {TIMER_MODES.map((m) => (
             <Button
               key={m.label}
@@ -218,8 +218,8 @@ const Timer = () => {
           ))}
         </div>
 
-        <div className="relative flex items-center justify-center w-full border-1 border-white border-opacity-20 bg-gradient-to-r from-[#2523D5] to-[#FA3C91] max-w-[470px] rounded-[15px] h-[184px]">
-          <div className="w-full flex items-center justify-center text-[120px] md:text-[96px] sm:text-[56px] leading-[1] font-sora font-bold text-white drop-shadow-lg">
+        <div className="relative flex items-center justify-center w-full border-1 border-white border-opacity-20 bg-gradient-to-r from-[#2523D5] to-[#FA3C91] max-w-[300px] md:max-w-[470px] rounded-[15px] h-[100px] md:h-[184px]">
+          <div className="w-full flex items-center justify-center text-[80px] md:text-[120p] leading-[1] font-sora font-bold text-white drop-shadow-lg">
             {/* Use fixed-width spans and tabular numbers so digits don't shift and colon stays centered */}
             <div className="inline-flex items-center justify-center select-none">
               <span className="tabular-nums w-[2ch] text-right">{minutes}</span>
@@ -230,7 +230,7 @@ const Timer = () => {
         </div>
 
         {/* Controls */}
-        <div className="mt-8 flex gap-[25px] items-center z-30">
+        <div className="flex gap-[15px] md:gap-[25px] items-center z-30">
           <Button
               onClick={() => {
                 if (isRunning) {

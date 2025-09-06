@@ -38,6 +38,13 @@ export const UserProvider = ({ children }) => {
 
   // stable save functions to avoid changing dependencies in callbacks
   const saveTimerData = useCallback(async (data) => {
+    // Update local state immediately so UI (Timer) reflects changes without waiting for network
+    try {
+      setTimerData(data);
+    } catch (e) {
+      // ignore
+    }
+
     if (!user) return;
     try {
       const docRef = doc(db, 'users', user.id);
@@ -98,11 +105,19 @@ export const UserProvider = ({ children }) => {
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
     if (savedUser) {
-      const parsedUser = JSON.parse(savedUser);
-      setUser(parsedUser);
-      loadUserData(parsedUser.id);
+      try {
+        const parsedUser = JSON.parse(savedUser);
+        // Avoid resetting `user` on every render (JSON.parse returns a new object each time).
+        // Only set and load when there is no current user or the stored id differs.
+        if (!user || user.id !== parsedUser.id) {
+          setUser(parsedUser);
+          loadUserData(parsedUser.id);
+        }
+      } catch (err) {
+        console.error('Failed to parse saved user from localStorage', err);
+      }
     }
-  }, [loadUserData]);
+  }, [loadUserData, user]);
 
   const handleLogin = (userData) => {
     setUser(userData);

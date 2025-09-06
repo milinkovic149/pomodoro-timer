@@ -15,7 +15,7 @@ const sora = Sora({
 export default function Home() {
 
   return (
-    <main className="min-h-screen flex flex-col">
+    <main className="flex flex-col min-h-screen">
       <SEO
         title="Pomodoro Productivity — Pomodoro timer for increased productivity"
         description="A simple, lightweight Pomodoro timer to boost focus and productivity. Configure work and break intervals and track your progress."
@@ -26,7 +26,7 @@ export default function Home() {
             <Image
                 src={Background}
                 alt="Pomodoro background"
-                className="block w-full h-full object-cover object-center"
+                className="block object-cover object-center w-full h-full"
             />
         </div>
         <div className="flex-1">

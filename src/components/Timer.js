@@ -235,11 +235,15 @@ const Timer = () => {
               onClick={() => {
                 if (isRunning) {
                   setIsRunning(false);
-                  saveTimerData({ modeIndex, secondsLeft, isRunning: false });
+                  const payload = { modeIndex, secondsLeft, isRunning: false };
+                  setTimerData(payload);
+                  saveTimerData(payload);
                 } else {
                   if (secondsLeft === 0) setSecondsLeft(mode.minutes * 60);
                   setIsRunning(true);
-                  saveTimerData({ modeIndex, secondsLeft: secondsLeft === 0 ? mode.minutes * 60 : secondsLeft, isRunning: true });
+                  const payload = { modeIndex, secondsLeft: secondsLeft === 0 ? mode.minutes * 60 : secondsLeft, isRunning: true };
+                  setTimerData(payload);
+                  saveTimerData(payload);
                 }
               }}
               className={`rounded-full py-[12px] text-[20px]`}

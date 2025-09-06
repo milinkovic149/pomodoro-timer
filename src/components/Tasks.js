@@ -151,6 +151,9 @@ const Tasks = () => {
       };
       // put new tasks at the top
       newTasks = [newTask, ...tasks];
+
+      // make the newly created task active immediately
+      setActiveTaskId(newTask.id);
     }
 
     setTasks(newTasks);
